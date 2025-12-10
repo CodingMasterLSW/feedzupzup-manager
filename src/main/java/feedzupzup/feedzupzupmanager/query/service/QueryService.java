@@ -1,5 +1,6 @@
 package feedzupzup.feedzupzupmanager.query.service;
 
+import feedzupzup.feedzupzupmanager.query.utils.QueryValidator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class QueryService {
 
     @Transactional
     public String executeWriteQuery(final String sql) {
+        QueryValidator.validate(sql);
         log.info("쓰기 쿼리 실행");
         log.info("쿼리 : " + sql);
         try {
@@ -30,6 +32,7 @@ public class QueryService {
     }
 
     public String executeReadQuery(final String sql) {
+        QueryValidator.validate(sql);
         log.info("읽기 쿼리 실행");
         log.info("쿼리 : " + sql);
 
