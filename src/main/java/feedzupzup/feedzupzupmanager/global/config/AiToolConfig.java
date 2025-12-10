@@ -19,7 +19,7 @@ public class AiToolConfig {
     @Bean("sqlChatClient")
     public ChatClient sqlChatClient(ChatClient.Builder builder) {
         return builder
-                .defaultFunctions("getSchema", "executeWriteSql", "executeReadSql")
+                .defaultToolNames("getSchema", "executeWriteSql", "executeReadSql")
                 .defaultSystem(DBA_SYSTEM_PROMPT)
                 .build();
     }
