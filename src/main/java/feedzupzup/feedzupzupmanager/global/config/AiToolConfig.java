@@ -2,6 +2,7 @@ package feedzupzup.feedzupzupmanager.global.config;
 
 import static feedzupzup.feedzupzupmanager.ai.constant.AiPrompts.DBA_SYSTEM_PROMPT;
 
+import feedzupzup.feedzupzupmanager.ai.util.AiTaskWrapper;
 import feedzupzup.feedzupzupmanager.query.service.QueryService;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
@@ -32,14 +33,18 @@ public class AiToolConfig {
 
     @Bean
     @Description("Execute INSERT, UPDATE queries. NOT for SELECT.")
-    public Function<AiToolConfig.SqlRequest, String> executeWriteSql(final QueryService queryService) {
-        return request -> queryService.executeWriteQuery(request.sql());
+    public Function<SqlRequest, String> executeWriteSql(final QueryService queryService) {
+        return request -> AiTaskWrapper.execute(() -> {
+            int rows = queryService.executeWriteQuery(request.sql());
+            return "Query executed successfully. Rows affected: " + rows;
+        });
     }
 
     @Bean
     @Description("Execute SELECT queries to retrieve data from the database.")
     public Function<SqlRequest, String> executeReadSql(final QueryService queryService) {
-        return request -> queryService.executeReadQuery(request.sql());
+        return request -> AiTaskWrapper.execute(() ->
+            queryService.executeReadQuery(request.sql())
+        );
     }
-
 }

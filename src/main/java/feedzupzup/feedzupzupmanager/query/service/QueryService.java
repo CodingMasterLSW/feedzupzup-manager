@@ -18,31 +18,18 @@ public class QueryService {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
-    public String executeWriteQuery(final String sql) {
+    public int executeWriteQuery(final String sql) {
         QueryValidator.validate(sql);
         log.info("쓰기 쿼리 실행");
         log.info("쿼리 : " + sql);
-        try {
-            jdbcTemplate.update(sql);
-            return "Query executed success";
-        } catch (Exception e) {
-            log.error("쓰기 쿼리 실패", e);
-            return "Error executing write query: " + e.getMessage();
-        }
+        return jdbcTemplate.update(sql);
     }
 
     public String executeReadQuery(final String sql) {
         QueryValidator.validate(sql);
         log.info("읽기 쿼리 실행");
         log.info("쿼리 : " + sql);
-
-        try {
-            var result = jdbcTemplate.queryForList(sql);
-            return result.toString();
-        } catch (Exception e) {
-            log.error("읽기 쿼리 실패", e);
-            return "Error executing read query: " + e.getMessage();
-        }
+        return jdbcTemplate.queryForList(sql).toString();
     }
 
     public String getAllTableDdl() {
