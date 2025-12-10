@@ -24,6 +24,14 @@ public class GlobalExceptionHandler {
                 .body(ErrorResponse.error(e.getErrorCode()));
     }
 
+    @ExceptionHandler(DataProcessingException.class)
+    public ResponseEntity<ErrorResponse> handleDataProcessingException(final DataProcessingException e) {
+        log.error(e.getMessage(), e);
+        final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(e.getErrorCode()));
+    }
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(final HttpMessageNotReadableException e) {
         log.error(e.getMessage(), e);
