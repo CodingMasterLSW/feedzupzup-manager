@@ -3,7 +3,9 @@ language: ko-KR
 reviews:
   profile: chill
   high_level_summary: true
+  poem: false
   sequence_diagrams: false
+  collapse_walkthrough: true
   auto_review:
     enabled: true
     base_branches: ["develop"]
