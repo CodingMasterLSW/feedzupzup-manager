@@ -16,6 +16,9 @@ public class QueryValidator {
     private QueryValidator() {}
 
     public static void validate(final String sql) {
+        if (sql == null) {
+            throw new NotExecuteQueryException("쿼리 문자열이 null 입니다.");
+        }
         if (DANGEROUS_PATTERNS.matcher(sql).find()) {
             throw new NotExecuteQueryException("해당 쿼리 : " + sql + "은 기존 테이블에 영향을 미칠 수 있어 실행할 수 없습니다.");
         }
