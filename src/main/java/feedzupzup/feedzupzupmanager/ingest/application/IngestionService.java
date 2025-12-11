@@ -1,4 +1,4 @@
-package feedzupzup.feedzupzupmanager.ingest.service;
+package feedzupzup.feedzupzupmanager.ingest.application;
 
 import java.util.Map;
 import lombok.RequiredArgsConstructor;

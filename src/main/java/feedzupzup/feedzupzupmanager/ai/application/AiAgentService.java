@@ -1,4 +1,4 @@
-package feedzupzup.feedzupzupmanager.ai.service;
+package feedzupzup.feedzupzupmanager.ai.application;
 
 import feedzupzup.feedzupzupmanager.ai.dto.QueryLlmRequest;
 import feedzupzup.feedzupzupmanager.ai.dto.QueryLlmResponse;
