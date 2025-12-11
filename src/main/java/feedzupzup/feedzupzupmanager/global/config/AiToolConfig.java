@@ -1,10 +1,10 @@
 package feedzupzup.feedzupzupmanager.global.config;
 
-import static feedzupzup.feedzupzupmanager.ai.constant.AiPrompts.DBA_SYSTEM_PROMPT;
+import static feedzupzup.feedzupzupmanager.domain.ai.constant.AiPrompts.DBA_SYSTEM_PROMPT;
 
-import feedzupzup.feedzupzupmanager.ai.util.AiTaskWrapper;
-import feedzupzup.feedzupzupmanager.ingest.application.VectorStoreAdapter;
-import feedzupzup.feedzupzupmanager.query.application.QueryService;
+import feedzupzup.feedzupzupmanager.domain.ai.util.AiTaskWrapper;
+import feedzupzup.feedzupzupmanager.infra.adapter.VectorStoreAdapter;
+import feedzupzup.feedzupzupmanager.domain.query.application.QueryService;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;

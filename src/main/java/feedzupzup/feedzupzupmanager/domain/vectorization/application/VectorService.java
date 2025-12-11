@@ -1,0 +1,25 @@
+package feedzupzup.feedzupzupmanager.domain.vectorization.application;
+
+import feedzupzup.feedzupzupmanager.infra.adapter.SwaggerGateway;
+import feedzupzup.feedzupzupmanager.infra.adapter.VectorStoreAdapter;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.document.Document;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class VectorService {
+
+    private final VectorStoreAdapter vectorStoreAdapter;
+    private final SwaggerGateway swaggerGateway;
+
+    public void loadSwaggerApiDocs() {
+        final String swaggerDataSet = swaggerGateway.fetchSwaggerJson();
+        final Document document = new Document(swaggerDataSet, Map.of("source", "swagger-api"));
+        vectorStoreAdapter.saveDocument(document);
+    }
+
+}
