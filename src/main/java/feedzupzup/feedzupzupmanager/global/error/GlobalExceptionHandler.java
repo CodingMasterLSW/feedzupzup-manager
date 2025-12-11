@@ -1,5 +1,6 @@
 package feedzupzup.feedzupzupmanager.global.error;
 
+import feedzupzup.feedzupzupmanager.global.error.exception.BadRequestException;
 import feedzupzup.feedzupzupmanager.global.error.exception.DataProcessingException;
 import feedzupzup.feedzupzupmanager.global.error.exception.DomainException;
 import feedzupzup.feedzupzupmanager.global.error.exception.UnauthorizedException;
@@ -24,6 +25,13 @@ public class GlobalExceptionHandler {
         final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
         return ResponseEntity.status(httpStatus)
                 .body(ErrorResponse.error(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException e) {
+        log.info(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
     }
 
     @ExceptionHandler(DomainException.class)
