@@ -1,7 +1,9 @@
 package feedzupzup.feedzupzupmanager.global.error;
 
+import feedzupzup.feedzupzupmanager.global.error.exception.BadRequestException;
 import feedzupzup.feedzupzupmanager.global.error.exception.DataProcessingException;
 import feedzupzup.feedzupzupmanager.global.error.exception.DomainException;
+import feedzupzup.feedzupzupmanager.global.error.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,13 +11,40 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static feedzupzup.feedzupzupmanager.global.error.ErrorCode.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(final UnauthorizedException e) {
+        log.warn(e.getMessage());
+        final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(NOT_FOUND)
+    public ErrorResponse handleException(final NoResourceFoundException e) {
+        final ErrorCode errorCode = ErrorCode.RESOURCE_NOT_FOUND;
+        log.info(errorCode.getMessage(), e);
+        return ErrorResponse.error(errorCode);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> handleBadRequestException(final BadRequestException e) {
+        log.info(e.getMessage());
+        final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(e.getErrorCode()));
+    }
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorResponse> handleDomainException(final DomainException e) {
