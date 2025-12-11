@@ -1,11 +1,14 @@
 package feedzupzup.feedzupzupmanager.global.error;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
 
+    RESOURCE_NOT_FOUND("요청한 자원을 찾을 수 없습니다", NOT_FOUND),
     UNAUTHORIZED("인증이 필요합니다. 로그인 후 다시 시도해주세요.", HttpStatus.UNAUTHORIZED),
     LOGIN_INVALID_CREDENTIALS("아이디 또는 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     DANGEROUS_QUERY("해당 쿼리는 데이터를 조작할 수 있어 실행할 수 없습니다.", HttpStatus.BAD_REQUEST),
