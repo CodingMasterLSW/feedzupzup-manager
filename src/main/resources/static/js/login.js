@@ -26,10 +26,10 @@ async function handleLogin(event) {
     if (response.ok) {
       // 로그인 성공 - 메인 페이지로 이동
       window.location.href = '/';
-    } else if (response.status === 401) {
-      errorMessage.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
     } else {
-      errorMessage.textContent = '로그인 중 오류가 발생했습니다.';
+      // 서버에서 보낸 에러 메시지 사용
+      const errorData = await response.json();
+      errorMessage.textContent = errorData.message || '로그인 중 오류가 발생했습니다.';
     }
   } catch (error) {
     errorMessage.textContent = '서버와 통신 중 오류가 발생했습니다.';

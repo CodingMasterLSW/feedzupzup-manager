@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     UNAUTHORIZED("인증이 필요합니다. 로그인 후 다시 시도해주세요.", HttpStatus.UNAUTHORIZED),
+    LOGIN_INVALID_CREDENTIALS("아이디 또는 비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     DANGEROUS_QUERY("해당 쿼리는 데이터를 조작할 수 있어 실행할 수 없습니다.", HttpStatus.BAD_REQUEST),
     INVALID_INPUT_VALUE("잘못된 입력값입니다.", HttpStatus.BAD_REQUEST),
     INVALID_TYPE_VALUE("요청 값의 타입이 잘못되었습니다.", HttpStatus.BAD_REQUEST),
