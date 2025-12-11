@@ -10,7 +10,7 @@ public class CookieGenerator {
     private static final String COOKIE_PATH = "/";
 
     public Cookie createExpiredSessionCookie() {
-        final Cookie cookie = new Cookie(SESSION_COOKIE_NAME, null);
+        final Cookie cookie = new Cookie(SESSION_COOKIE_NAME, "");
         cookie.setPath(COOKIE_PATH);
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
