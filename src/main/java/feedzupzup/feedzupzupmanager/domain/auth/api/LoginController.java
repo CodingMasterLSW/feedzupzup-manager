@@ -23,6 +23,8 @@ public class LoginController {
             @RequestBody final LoginRequest request,
             final HttpSession session
     ) {
+        System.out.println(request.id());
+        System.out.println(request.password());
         authService.validateCredentials(request);
         session.setAttribute("admin", true);
         return ResponseEntity.ok().build();
