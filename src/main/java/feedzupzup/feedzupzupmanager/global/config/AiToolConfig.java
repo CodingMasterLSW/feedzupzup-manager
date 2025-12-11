@@ -3,7 +3,8 @@ package feedzupzup.feedzupzupmanager.global.config;
 import static feedzupzup.feedzupzupmanager.ai.constant.AiPrompts.DBA_SYSTEM_PROMPT;
 
 import feedzupzup.feedzupzupmanager.ai.util.AiTaskWrapper;
-import feedzupzup.feedzupzupmanager.query.service.QueryService;
+import feedzupzup.feedzupzupmanager.ingest.application.VectorStoreAdapter;
+import feedzupzup.feedzupzupmanager.query.application.QueryService;
 import java.util.function.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -17,10 +18,19 @@ public class AiToolConfig {
 
     public record SqlRequest(String sql) {}
 
-    @Bean("sqlChatClient")
-    public ChatClient sqlChatClient(ChatClient.Builder builder) {
+    public record SearchRequestWrapper(String query) {}
+
+    @Bean
+    @Description("Search technical documents (Swagger API, Team Rules) to answer questions.")
+    public Function<SearchRequestWrapper, String> searchKnowledgeBase(final VectorStoreAdapter vectorStoreAdapter) {
+        return requestWrapper -> AiTaskWrapper.execute(() ->
+                vectorStoreAdapter.searchSimilarDocuments(requestWrapper.query()));
+    }
+
+    @Bean("chatClient")
+    public ChatClient chatClient(ChatClient.Builder builder) {
         return builder
-                .defaultToolNames("getSchema", "executeWriteSql", "executeReadSql")
+                .defaultToolNames("getSchema", "executeWriteSql", "executeReadSql", "searchKnowledgeBase")
                 .defaultSystem(DBA_SYSTEM_PROMPT)
                 .build();
     }

@@ -1,7 +1,7 @@
 package feedzupzup.feedzupzupmanager.ai.controller;
 
 import feedzupzup.feedzupzupmanager.ai.dto.QueryLlmResponse;
-import feedzupzup.feedzupzupmanager.ai.service.AiAgentService;
+import feedzupzup.feedzupzupmanager.ai.application.AiAgentService;
 import feedzupzup.feedzupzupmanager.ai.dto.QueryLlmRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

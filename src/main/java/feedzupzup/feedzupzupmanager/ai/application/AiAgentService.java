@@ -1,4 +1,4 @@
-package feedzupzup.feedzupzupmanager.ai.service;
+package feedzupzup.feedzupzupmanager.ai.application;
 
 import feedzupzup.feedzupzupmanager.ai.dto.QueryLlmRequest;
 import feedzupzup.feedzupzupmanager.ai.dto.QueryLlmResponse;
@@ -13,7 +13,7 @@ public class AiAgentService {
 
     private final ChatClient chatClient;
 
-    public AiAgentService(@Qualifier("sqlChatClient") final ChatClient chatClient) {
+    public AiAgentService(@Qualifier("chatClient") final ChatClient chatClient) {
         this.chatClient = chatClient;
     }
 
