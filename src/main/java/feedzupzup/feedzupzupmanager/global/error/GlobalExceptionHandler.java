@@ -2,6 +2,7 @@ package feedzupzup.feedzupzupmanager.global.error;
 
 import feedzupzup.feedzupzupmanager.global.error.exception.DataProcessingException;
 import feedzupzup.feedzupzupmanager.global.error.exception.DomainException;
+import feedzupzup.feedzupzupmanager.global.error.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,14 @@ import static feedzupzup.feedzupzupmanager.global.error.ErrorCode.*;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(final UnauthorizedException e) {
+        log.warn(e.getMessage());
+        final HttpStatus httpStatus = e.getErrorCode().getHttpStatus();
+        return ResponseEntity.status(httpStatus)
+                .body(ErrorResponse.error(e.getErrorCode()));
+    }
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorResponse> handleDomainException(final DomainException e) {
