@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Feedzupzup AI Agent</title>
+  <link rel="stylesheet" th:href="@{/css/chat.css}">
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="header">🤖 피드줍줍 매니저</div>
+
+  <div class="chat-box" id="chatBox">
+    <div class="message ai-message">안녕하세요! 저는 피드줍줍 매니저입니다. 무엇을 도와드릴까요?</div>
+  </div>
+
+  <div class="typing-indicator" id="loading">
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="예: 유저 테이블에서 최근 가입한 5명 보여줘" onkeypress="handleKeyPress(event)">
+    <button onclick="sendMessage()" id="sendBtn">전송</button>
+  </div>
+</div>
+
+<script th:src="@{/js/chat.js}"></script>
+
+</body>
+</html>

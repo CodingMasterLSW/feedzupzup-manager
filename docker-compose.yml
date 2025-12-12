@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  chromadb:
+    image: chromadb/chroma:1.0.0
+    container_name: feedzupzup-chroma
+    ports:
+      - "8000:8000" # Spring AI가 접속할 포트
+    volumes:
+      - ./chroma-data:/chroma/chroma # 데이터를 로컬에 저장 (컨테이너 꺼도 유지됨)
+    environment:
+      - IS_PERSISTENT=TRUE
