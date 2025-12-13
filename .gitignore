@@ -39,6 +39,7 @@ out/
 ### yml
 /src/main/resources/application.yml
 /src/main/resources/*.yml
+/src/test/resources/*.yml
 
 # Gradle
 .gradle/
