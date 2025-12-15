@@ -1,4 +1,4 @@
-package feedzupzup.feedzupzupmanager.infra.evaluator;
+package feedzupzup.feedzupzupmanager.domain.ai.evaluator;
 
 import jakarta.annotation.Nullable;
 import java.util.ArrayList;

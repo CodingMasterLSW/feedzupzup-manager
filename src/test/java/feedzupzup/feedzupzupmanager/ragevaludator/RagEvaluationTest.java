@@ -3,15 +3,14 @@ package feedzupzup.feedzupzupmanager.ragevaludator;
 
 import feedzupzup.feedzupzupmanager.domain.vectorization.application.VectorService;
 import feedzupzup.feedzupzupmanager.infra.adapter.SwaggerGateway;
-import feedzupzup.feedzupzupmanager.infra.evaluator.ContextPrecisionEvaluator;
-import feedzupzup.feedzupzupmanager.infra.evaluator.ContextRecallEvaluator;
+import feedzupzup.feedzupzupmanager.domain.ai.evaluator.ContextPrecisionEvaluator;
+import feedzupzup.feedzupzupmanager.domain.ai.evaluator.ContextRecallEvaluator;
 import feedzupzup.feedzupzupmanager.ragevaludator.factory.ModelEvaluatorFactory;
 import feedzupzup.feedzupzupmanager.domain.ai.application.AiAgentService;
 import feedzupzup.feedzupzupmanager.domain.ai.dto.LlmRequest;
 import feedzupzup.feedzupzupmanager.domain.ai.dto.LlmResponse;
 import feedzupzup.feedzupzupmanager.infra.adapter.VectorStoreAdapter;
 import feedzupzup.feedzupzupmanager.ragevaludator.RagTestCaseRepository.RagTestCase;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
