@@ -14,11 +14,9 @@ import org.springframework.stereotype.Component;
 public class VectorStoreAdapter {
 
     private final VectorStore vectorStore;
-    private final TokenTextSplitter tokenTextSplitter = new TokenTextSplitter();
 
-    public void saveDocument(final Document document) {
-        List<Document> splitDocs = tokenTextSplitter.apply(List.of(document));
-        vectorStore.add(splitDocs);
+    public void saveDocuments(final List<Document> documents) {
+        vectorStore.add(documents);
     }
 
     public String searchSimilarDocuments(final String query) {
@@ -26,7 +24,7 @@ public class VectorStoreAdapter {
                 SearchRequest.builder()
                         .query(query)
                         .topK(3)
-                        .similarityThreshold(0.8)
+                        .similarityThreshold(0.6)
                         .build()
         );
         if (docs.isEmpty()) {

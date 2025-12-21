@@ -10,3 +10,13 @@ services:
       - ./chroma-data:/chroma/chroma # 데이터를 로컬에 저장 (컨테이너 꺼도 유지됨)
     environment:
       - IS_PERSISTENT=TRUE
+
+  chromadb-test:
+    image: chromadb/chroma:1.0.0
+    container_name: feedzupzup-chroma-test
+    ports:
+      - "8001:8000" # 테스트 환경용 포트
+    volumes:
+      - ./chroma-data-test:/chroma/chroma # 테스트 데이터를 별도로 저장
+    environment:
+      - IS_PERSISTENT=TRUE
