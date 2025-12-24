@@ -1,10 +1,17 @@
 package feedzupzup.feedzupzupmanager.domain.ai.evaluator;
 
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.EMPTY_STRING;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.PASSING_THRESHOLD;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.RESPONSE_YES;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.PromptVars;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.MetadataKeys;
+
 import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.evaluation.EvaluationRequest;
@@ -56,8 +63,8 @@ public class ContextRecallEvaluator implements Evaluator {
             @Nullable PromptTemplate sentenceExtractionPrompt) {
         Assert.notNull(chatClientBuilder, "chatClientBuilder cannot be null");
         this.chatClientBuilder = chatClientBuilder;
-        this.classificationPrompt = classificationPrompt != null ? classificationPrompt : DEFAULT_CLASSIFICATION_PROMPT;
-        this.sentenceExtractionPrompt = sentenceExtractionPrompt != null ? sentenceExtractionPrompt : DEFAULT_SENTENCE_EXTRACTION_PROMPT;
+        this.classificationPrompt = Objects.requireNonNullElse(classificationPrompt, DEFAULT_CLASSIFICATION_PROMPT);
+        this.sentenceExtractionPrompt = Objects.requireNonNullElse(sentenceExtractionPrompt, DEFAULT_SENTENCE_EXTRACTION_PROMPT);
     }
 
     @Override
@@ -68,7 +75,8 @@ public class ContextRecallEvaluator implements Evaluator {
         if (!StringUtils.hasText(groundTruth)) {
             return new EvaluationResponse(false, 0.0f,
                     "Ground truth (expected answer) is required for Context Recall evaluation",
-                    Collections.emptyMap());
+                    Collections.emptyMap()
+            );
         }
 
         if (!StringUtils.hasText(context)) {
@@ -97,20 +105,20 @@ public class ContextRecallEvaluator implements Evaluator {
         long attributedCount = attributionResults.stream().filter(r -> r).count();
         float recall = (float) attributedCount / statements.size();
 
-        boolean passing = recall >= 0.5f;
+        boolean passing = recall >= PASSING_THRESHOLD;
 
         Map<String, Object> metadata = Map.of(
-                "statements", statements,
-                "attributionResults", attributionResults,
-                "totalStatements", statements.size(),
-                "attributedStatements", attributedCount
+                MetadataKeys.STATEMENTS, statements,
+                MetadataKeys.ATTRIBUTION_RESULTS, attributionResults,
+                MetadataKeys.TOTAL_STATEMENTS, statements.size(),
+                MetadataKeys.ATTRIBUTED_STATEMENTS, attributedCount
         );
 
-        return new EvaluationResponse(passing, recall, "", metadata);
+        return new EvaluationResponse(passing, recall, EMPTY_STRING, metadata);
     }
 
     private List<String> extractStatements(String text) {
-        String userMessage = this.sentenceExtractionPrompt.render(Map.of("text", text));
+        String userMessage = this.sentenceExtractionPrompt.render(Map.of(PromptVars.TEXT, text));
 
         String response = this.chatClientBuilder.build()
                 .prompt()
@@ -130,8 +138,8 @@ public class ContextRecallEvaluator implements Evaluator {
 
     private boolean classifyStatement(String context, String statement) {
         String userMessage = this.classificationPrompt.render(Map.of(
-                "context", context,
-                "statement", statement
+                PromptVars.CONTEXT, context,
+                PromptVars.STATEMENT, statement
         ));
 
         String response = this.chatClientBuilder.build()
@@ -140,7 +148,14 @@ public class ContextRecallEvaluator implements Evaluator {
                 .call()
                 .content();
 
-        return "yes".equalsIgnoreCase(response != null ? response.trim() : "");
+        String trimmedResponse;
+        if (response != null) {
+            trimmedResponse = response.trim();
+        } else {
+            trimmedResponse = EMPTY_STRING;
+        }
+
+        return RESPONSE_YES.equalsIgnoreCase(trimmedResponse);
     }
 
     public static Builder builder() {
