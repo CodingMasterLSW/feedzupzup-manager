@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.PromptTemplate;
@@ -53,12 +54,7 @@ public class ContextPrecisionEvaluator implements Evaluator {
     private ContextPrecisionEvaluator(ChatClient.Builder chatClientBuilder, @Nullable PromptTemplate promptTemplate) {
         Assert.notNull(chatClientBuilder, "chatClientBuilder cannot be null");
         this.chatClientBuilder = chatClientBuilder;
-
-        if (promptTemplate != null) {
-            this.promptTemplate = promptTemplate;
-        } else {
-            this.promptTemplate = DEFAULT_PROMPT_TEMPLATE;
-        }
+        this.promptTemplate = Objects.requireNonNullElse(promptTemplate, DEFAULT_PROMPT_TEMPLATE);
     }
 
     @Override
@@ -69,7 +65,6 @@ public class ContextPrecisionEvaluator implements Evaluator {
         if (contextChunks.isEmpty()) {
             return new EvaluationResponse(false, 0.0f, "No context provided for evaluation", Collections.emptyMap());
         }
-
         List<Boolean> relevanceResults = new ArrayList<>();
 
         for (String chunk : contextChunks) {

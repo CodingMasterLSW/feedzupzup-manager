@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.evaluation.EvaluationRequest;
@@ -62,18 +63,8 @@ public class ContextRecallEvaluator implements Evaluator {
             @Nullable PromptTemplate sentenceExtractionPrompt) {
         Assert.notNull(chatClientBuilder, "chatClientBuilder cannot be null");
         this.chatClientBuilder = chatClientBuilder;
-
-        if (classificationPrompt != null) {
-            this.classificationPrompt = classificationPrompt;
-        } else {
-            this.classificationPrompt = DEFAULT_CLASSIFICATION_PROMPT;
-        }
-
-        if (sentenceExtractionPrompt != null) {
-            this.sentenceExtractionPrompt = sentenceExtractionPrompt;
-        } else {
-            this.sentenceExtractionPrompt = DEFAULT_SENTENCE_EXTRACTION_PROMPT;
-        }
+        this.classificationPrompt = Objects.requireNonNullElse(classificationPrompt, DEFAULT_CLASSIFICATION_PROMPT);
+        this.sentenceExtractionPrompt = Objects.requireNonNullElse(sentenceExtractionPrompt, DEFAULT_SENTENCE_EXTRACTION_PROMPT);
     }
 
     @Override
