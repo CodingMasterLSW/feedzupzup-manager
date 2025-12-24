@@ -1,5 +1,11 @@
 package feedzupzup.feedzupzupmanager.domain.ai.evaluator;
 
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.EMPTY_STRING;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.PASSING_THRESHOLD;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.RESPONSE_YES;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.PromptVars;
+import static feedzupzup.feedzupzupmanager.domain.ai.evaluator.EvaluatorConstants.MetadataKeys;
+
 import jakarta.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +53,12 @@ public class ContextPrecisionEvaluator implements Evaluator {
     private ContextPrecisionEvaluator(ChatClient.Builder chatClientBuilder, @Nullable PromptTemplate promptTemplate) {
         Assert.notNull(chatClientBuilder, "chatClientBuilder cannot be null");
         this.chatClientBuilder = chatClientBuilder;
-        this.promptTemplate = promptTemplate != null ? promptTemplate : DEFAULT_PROMPT_TEMPLATE;
+
+        if (promptTemplate != null) {
+            this.promptTemplate = promptTemplate;
+        } else {
+            this.promptTemplate = DEFAULT_PROMPT_TEMPLATE;
+        }
     }
 
     @Override
@@ -68,14 +79,14 @@ public class ContextPrecisionEvaluator implements Evaluator {
 
         float precision = calculateContextPrecision(relevanceResults);
 
-        boolean passing = precision >= 0.5f;
+        boolean passing = precision >= PASSING_THRESHOLD;
 
         Map<String, Object> metadata = Map.of(
-                "relevanceResults", relevanceResults,
-                "totalChunks", contextChunks.size(),
-                "relevantChunks", relevanceResults.stream().filter(r -> r).count()
+                MetadataKeys.RELEVANCE_RESULTS, relevanceResults,
+                MetadataKeys.TOTAL_CHUNKS, contextChunks.size(),
+                MetadataKeys.RELEVANT_CHUNKS, relevanceResults.stream().filter(r -> r).count()
         );
-        return new EvaluationResponse(passing, precision, "", metadata);
+        return new EvaluationResponse(passing, precision, EMPTY_STRING, metadata);
     }
 
     private List<String> extractContextChunks(EvaluationRequest evaluationRequest) {
@@ -97,8 +108,8 @@ public class ContextPrecisionEvaluator implements Evaluator {
 
     private boolean evaluateChunkRelevance(String question, String context) {
         String userMessage = this.promptTemplate.render(Map.of(
-                "question", question,
-                "context", context
+                PromptVars.QUESTION, question,
+                PromptVars.CONTEXT, context
         ));
 
         String response = this.chatClientBuilder.build()
@@ -107,7 +118,14 @@ public class ContextPrecisionEvaluator implements Evaluator {
                 .call()
                 .content();
 
-        return "yes".equalsIgnoreCase(response != null ? response.trim() : "");
+        String trimmedResponse;
+        if (response != null) {
+            trimmedResponse = response.trim();
+        } else {
+            trimmedResponse = EMPTY_STRING;
+        }
+
+        return RESPONSE_YES.equalsIgnoreCase(trimmedResponse);
     }
 
     private float calculateContextPrecision(List<Boolean> relevanceResults) {
